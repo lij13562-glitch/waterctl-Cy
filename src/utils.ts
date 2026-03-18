@@ -12,9 +12,8 @@ export function decAsHex(n: number): number {
 }
 
 export function isCsdn() {
-  const userAgent = navigator.userAgent.toLowerCase();
-  const referer = document.referrer.toLowerCase();
-  return /csdnapp/i.test(userAgent) || /csdn.net/i.test(referer) || /gitcode.com/i.test(referer);
+  
+  return false;
 }
 
 // だって思考と錯誤のモンスター
