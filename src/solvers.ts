@@ -82,7 +82,16 @@ export async function makeUnlockResponse(unlockRequestBuffer: ArrayBuffer, devic
     0xFE, 0x87, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00
   ]);
-
+// 在第86行之前添加
+console.log("=== makeUnlockResponse DEBUG ===");
+console.log("unknownByte:", unknownByte.toString(16).padStart(2, '0'));
+console.log("nonceBytes:", Array.from(nonceBytes).map(x => x.toString(16).padStart(2, '0')));
+console.log("nonce:", nonce, "=", "0x" + nonce.toString(16));
+console.log("newNonce:", newNonce, "=", "0x" + newNonce.toString(16));
+console.log("newNonceBytes:", Array.from(newNonceBytes).map(x => x.toString(16).padStart(2, '0')));
+console.log("key:", Array.from(key).map(x => x.toString(16).padStart(2, '0')));
+console.log("checksumInput:", Array.from(checksumInput).map(x => x.toString(16).padStart(2, '0')).join(' '));
+ 
   const checksum = crc16cgaeaf(checksumInput);
 
   // prettier-ignore
