@@ -18,7 +18,6 @@ if (!navigator.bluetooth) {
 }
 
 
-
 document.addEventListener("DOMContentLoaded", () => {
   const mainButton = document.getElementById("main-button") as HTMLButtonElement;
   mainButton.addEventListener("click", handleButtonClick);
