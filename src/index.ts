@@ -17,11 +17,7 @@ if (!navigator.bluetooth) {
   (document.querySelector(".unsupported") as HTMLElement).style.display = "block";
 }
 
-/*if (isCsdn()) {
-  (document.querySelector(".supported") as HTMLElement).style.display = "none";
-  (document.querySelector(".unsupported") as HTMLElement).style.display = "none";
-  (document.querySelector(".csdn-warning") as HTMLElement).style.display = "block";
-}*/
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const mainButton = document.getElementById("main-button") as HTMLButtonElement;
