@@ -36,7 +36,13 @@ function updateUi(stage: "pending" | "ok" | "standby") {
       break;
   }
 }
-
+    function setupTimeoutMessage() {
+  // 设置超时提示，例如 5 秒后显示错误
+  pendingTimeoutMessage = setTimeout(() => {
+    updateUi("standby");
+    alert("连接超时");
+  }, 5000); // 超时时间可自行调整
+}
 async function disconnect() {
   if (bluetoothDevice) bluetoothDevice.gatt!.disconnect();
   isStarted = false;
@@ -194,13 +200,7 @@ async function start() {
     await rxdCharacteristic.startNotifications();
     rxdCharacteristic.addEventListener("characteristicvaluechanged", handleRxdNotifications);
 
-    function setupTimeoutMessage() {
-  // 设置超时提示，例如 5 秒后显示错误
-  pendingTimeoutMessage = setTimeout(() => {
-    updateUi("standby");
-    alert("连接超时");
-  }, 5000); // 超时时间可自行调整
-}
+
     await txdCharacteristic.writeValue(startPrologue);
     setupTimeoutMessage();
   } catch (error) {
