@@ -80,11 +80,16 @@ async function handleBluetoothError(error: unknown) {
 
 async function handleRxdNotifications(event: Event) {
   const value = (event.target! as BluetoothRemoteGATTCharacteristic).value!;
+  // 只在这里统一做一次转换
+  const buffer: ArrayBuffer = value.buffer instanceof ArrayBuffer
+    ? value.buffer
+    : new Uint8Array(value.buffer).buffer;
 
-  log("RXD: " + bufferToHexString(value.buffer as ArrayBuffer));
+  log("RXD: " + bufferToHexString(buffer));
 
   try {
-    let payload = new Uint8Array(value.buffer);
+    // payload 统一基于已转换的 buffer 创建
+    let payload = new Uint8Array(buffer);
 
     // due to a bug in the firmware, it may send an AT command "AT+STAS?" via RXD; it doesn't start with FDFD09
     if (payload[0] === 0x41 && payload[1] === 0x54 && payload[2] === 0x2b) {
@@ -120,24 +125,24 @@ async function handleRxdNotifications(event: Event) {
       case 0xB1:
         clearTimeout(pendingStartEpilogue);
         pendingStartEpilogue = setTimeout(() => {
-          txdCharacteristic.writeValue(makeStartEpilogue(bluetoothDevice.name!).buffer);
+          txdCharacteristic.writeValue(makeStartEpilogue(bluetoothDevice.name!));
         }, 500);
         break;
       case 0xAE: // receiving an unlock request (AE), this is a new firmware
         clearTimeout(pendingStartEpilogue);
-        await txdCharacteristic.writeValue((await makeUnlockResponse(payload, bluetoothDevice.name!)).buffer);
+        await txdCharacteristic.writeValue(await makeUnlockResponse(payload, bluetoothDevice.name!));
         break;
       case 0xAF:
         switch (payload[5]) {
           case 0x55: // key authentication ok; continue to send start epilogue (B2)
-            await txdCharacteristic.writeValue(makeStartEpilogue(bluetoothDevice.name!, true).buffer);
+            await txdCharacteristic.writeValue(makeStartEpilogue(bluetoothDevice.name!, true));
             break;
           case 0x01: // key authentication failed; "err41" (bad key)
           case 0x02: // ?
           case 0x04: // "err43" (bad nonce)
             throw new Error("WATERCTL INTERNAL Bad key");
           default:
-            await txdCharacteristic.writeValue(makeStartEpilogue(bluetoothDevice.name!, true).buffer);
+            await txdCharacteristic.writeValue(makeStartEpilogue(bluetoothDevice.name!, true));
             throw new Error("WATERCTL INTERNAL Unknown RXD data");
         }
         break;
@@ -168,14 +173,6 @@ async function handleRxdNotifications(event: Event) {
     }
   } catch (error) {
     handleBluetoothError(error);
-  }
-}
-
-function setupTimeoutMessage() {
-  if (!pendingTimeoutMessage) {
-    pendingTimeoutMessage = setTimeout(() => {
-      handleBluetoothError("WATERCTL INTERNAL Operation timed out");
-    }, 15000);
   }
 }
 
