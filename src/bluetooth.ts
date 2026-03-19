@@ -136,7 +136,7 @@ async function handleRxdNotifications(event: Event) {
         break;
       case 0xAE: // receiving an unlock request (AE), this is a new firmware
         clearTimeout(pendingStartEpilogue);
-        await txdCharacteristic.writeValue(await makeUnlockResponse(payload, bluetoothDevice.name!));
+        await txdCharacteristic.writeValue(await makeUnlockResponse(payload.buffer, bluetoothDevice.name!));
         break;
       case 0xAF:
         switch (payload[5]) {
