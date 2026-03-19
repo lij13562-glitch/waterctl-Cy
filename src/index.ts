@@ -5,9 +5,7 @@ import { handleButtonClick } from "./bluetooth";
 import { registerServiceWorker, resizeWindow, setupInstallButton } from "./pwaHelper";
 
 
-Sentry.init({
-  dsn: "https://17d03841e2244d53abdbe587434efd5c@glitchtip.celeswuff.science/1",
-});
+
 
 (document.getElementById("version") as HTMLSpanElement).innerText = " · v" + VERSION;
 
