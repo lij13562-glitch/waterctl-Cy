@@ -58,6 +58,17 @@ async function makeUnlockKey(array: Uint8Array): Promise<Uint8Array> {
 export async function makeUnlockResponse(unlockRequestBuffer: ArrayBuffer, deviceName: string): Promise<Uint8Array> {
   // 添加调试，看看实际数据
   const unlockRequest = new Uint8Array(unlockRequestBuffer);
+ console.log("📦 完整unlockRequest HEX:", Array.from(unlockRequest).map(x => x.toString(16).padStart(2,'0')).join(' '));
+  console.log("📦 unlockRequest.length:", unlockRequest.length);
+  console.log("📦 [0]:", unlockRequest[0].toString(16), "应该是 fd");
+  console.log("📦 [1]:", unlockRequest[1].toString(16), "应该是 fd");
+  console.log("📦 [2]:", unlockRequest[2].toString(16), "应该是 09");
+  console.log("📦 [3]:", unlockRequest[3].toString(16), "应该是 ae");
+  console.log("📦 [4]:", unlockRequest[4].toString(16), "应该是 24(或其他)");
+  console.log("📦 [5]:", unlockRequest[5].toString(16), "← unknownByte 应该是 24");
+  console.log("📦 [6,7]:", unlockRequest[6].toString(16), unlockRequest[7].toString(16), "← nonce 应该是 07 07");
+  console.log("📦 [8,9]:", unlockRequest[8].toString(16), unlockRequest[9].toString(16), "← MAC 应该是 aa 71");
+
   console.log("完整payload:", Array.from(unlockRequest).map(x => x.toString(16).padStart(2,'0')).join(' '));
   const unknownByte = unlockRequest[5]; // unknown, but we only need to echo it back
   const nonceBytes = unlockRequest.slice(6, 8); // not nonce in crypto sense, it's an auto-incrementing number and used for key calculation
