@@ -57,8 +57,8 @@ async function makeUnlockKey(array: Uint8Array): Promise<Uint8Array> {
 
 export async function makeUnlockResponse(unlockRequestBuffer: ArrayBuffer, deviceName: string): Promise<Uint8Array> {
   // 添加调试，看看实际数据
-  console.log("完整payload:", Array.from(unlockRequest).map(x => x.toString(16).padStart(2,'0')).join(' '));
   const unlockRequest = new Uint8Array(unlockRequestBuffer);
+  console.log("完整payload:", Array.from(unlockRequest).map(x => x.toString(16).padStart(2,'0')).join(' '));
   const unknownByte = unlockRequest[5]; // unknown, but we only need to echo it back
   const nonceBytes = unlockRequest.slice(6, 8); // not nonce in crypto sense, it's an auto-incrementing number and used for key calculation
   const mac = unlockRequest.slice(8, 10); // last 2 bytes of the MAC address
