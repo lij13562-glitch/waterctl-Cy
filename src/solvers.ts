@@ -70,9 +70,9 @@ export async function makeUnlockResponse(unlockRequestBuffer: ArrayBuffer, devic
   console.log("📦 [8,9]:", unlockRequest[8].toString(16), unlockRequest[9].toString(16), "← MAC 应该是 aa 71");
 
   console.log("完整payload:", Array.from(unlockRequest).map(x => x.toString(16).padStart(2,'0')).join(' '));
-  const unknownByte = unlockRequest[5]; // unknown, but we only need to echo it back
-  const nonceBytes = unlockRequest.slice(6, 8); // not nonce in crypto sense, it's an auto-incrementing number and used for key calculation
-  const mac = unlockRequest.slice(8, 10); // last 2 bytes of the MAC address
+  const unknownByte = unlockRequest[4]; // unknown, but we only need to echo it back
+  const nonceBytes = unlockRequest.slice(5, 7); // not nonce in crypto sense, it's an auto-incrementing number and used for key calculation
+  const mac = unlockRequest.slice(7, 9); // last 2 bytes of the MAC address
   // 验证位置是否正确
   console.log("payload[3]应该是AE:", unlockRequest[3].toString(16));
   console.log("payload[5]应该是23:", unlockRequest[5].toString(16));
