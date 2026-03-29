@@ -121,7 +121,11 @@ console.log("checksumInput:", Array.from(checksumInput).map(x => x.toString(16).
 
 // the one true command to begin a session
 export function makeStartEpilogue(deviceName: string, isKeyAuthPresent = false): Uint8Array {
-  const checksum = crc16changgong(deviceName.slice(-5));
+  const last5 = deviceName.slice(-5);
+  const checksum = crc16changgong(last5);
+  // 临时日志：打印设备名称后5位和CRC结果
+  console.log("设备名称后5位：", last5, "CRC计算结果：", checksum.toString(16));
+  // 原有逻辑...
   const mn = isKeyAuthPresent ? 0x0b : 0xff; // magic number
   const ri = makeRandomUserId();
   const dt = makeDatetimeArray();
