@@ -79,7 +79,7 @@ export async function makeUnlockResponse(unlockRequestBuffer: ArrayBuffer, devic
 
   // [0x00, 0x01] => 0x0001 => (add 1) => 0x0002 => [0x00, 0x02]
   const nonce = (nonceBytes[0] << 8) | nonceBytes[1];
-  const newNonce = nonce + 1;
+  const newNonce = nonce ;
   const newNonceBytes = nonce === 0xffff ? new Uint8Array([0x01, 0x00]) : new Uint8Array([(newNonce >> 8) & 0xff, newNonce & 0xff]); // bug-for-bug compatible
 
   const rawKey = await makeUnlockKey(new Uint8Array([...nonceBytes, ...mac])); // 2 bytes of nonce, 2 bytes of MAC
