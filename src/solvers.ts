@@ -71,7 +71,7 @@ export async function makeUnlockResponse(unlockRequestBuffer: ArrayBuffer, devic
 
   console.log("完整payload:", Array.from(unlockRequest).map(x => x.toString(16).padStart(2,'0')).join(' '));
   const unknownByte = unlockRequest[4]; // unknown, but we only need to echo it back
-  const nonceBytes = unlockRequest.slice(5, 7); // not nonce in crypto sense, it's an auto-incrementing number and used for key calculation
+  const nonceBytes = unlockRequest.slice(6, 8); // not nonce in crypto sense, it's an auto-incrementing number and used for key calculation
   const mac = unlockRequest.slice(7, 9); // last 2 bytes of the MAC address
   // 验证位置是否正确
   console.log("payload[3]应该是AE:", unlockRequest[3].toString(16));
@@ -79,7 +79,7 @@ export async function makeUnlockResponse(unlockRequestBuffer: ArrayBuffer, devic
 
   // [0x00, 0x01] => 0x0001 => (add 1) => 0x0002 => [0x00, 0x02]
   const nonce = (nonceBytes[0] << 8) | nonceBytes[1];
-  const newNonce = nonce ;
+  const newNonce = nonce+1 ;
   const newNonceBytes = nonce === 0xffff ? new Uint8Array([0x01, 0x00]) : new Uint8Array([(newNonce >> 8) & 0xff, newNonce & 0xff]); // bug-for-bug compatible
 
   const rawKey = await makeUnlockKey(new Uint8Array([...nonceBytes, ...mac])); // 2 bytes of nonce, 2 bytes of MAC
